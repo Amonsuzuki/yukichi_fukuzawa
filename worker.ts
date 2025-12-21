@@ -44,6 +44,7 @@ const SYSTEM_PROMPT = `
 
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
+    console.log("HIT", request.method, new URL(request.url).pathname);
     try {
 	    const url = new URL(request.url);
 
