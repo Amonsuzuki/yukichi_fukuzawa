@@ -65,6 +65,7 @@ export default {
 	    const source = event.source;
 	    const replyToken = event.replyToken as string | undefined;
 
+	    /*
 	    // check whether group_id is valid
 	    if (source?.type === "group") {
 	      const groupId = source.groupId;
@@ -75,6 +76,7 @@ export default {
 		return new Response("OK", { status: 200 });
 	      }
 	    }
+	    */
 
 	    if (!replyToken) return new Response("OK", { status: 200 });
 
