@@ -192,8 +192,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
     },
     body: JSON.stringify({
       //model: "google/gemma-3-27b-it:free",
-      //model: "deepseek/deepseek-r1-0528:free",
-      model: "qwen/qwen-2.5-vl-7b-instruct:free",
+      model: "deepseek/deepseek-r1-0528:free",
       //model: "openai/gpt-oss-20b:free", 
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
