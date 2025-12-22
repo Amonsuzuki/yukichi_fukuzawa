@@ -161,7 +161,7 @@ async function replyText(token: string, replyToken: string, text: string) {
 		  replyToken,
 		  messages: [{ type: "text", text }],
 	  }),
-  }, 25_000);
+  }, 250_000);
   if (!res.ok) {
 	  const t = await res.text().catch(() => "");
 	  console.error("LINE reply error:", res.status, t);
@@ -197,7 +197,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
         { role: "user", content: userText },
       ],
     }),
-  }, 10_000);
+  }, 250_000);
 
   if (!res.ok) {
     const t = await res.text().catch(() => "");
