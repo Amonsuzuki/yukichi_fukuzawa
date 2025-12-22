@@ -191,7 +191,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      model: "openai/gpt-oss-20b:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      model: "openai/gpt-oss-120b:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
