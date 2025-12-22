@@ -191,7 +191,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      model: "google/gemini-2.0-flash-exp:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      model: "google/gemma-3-27b-it:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
