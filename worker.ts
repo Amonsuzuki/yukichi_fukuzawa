@@ -191,7 +191,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      model: "allenai/olmo-3.1-32b-think:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      model: "nvidia/nemotron-3-nano-30b-a3b:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
