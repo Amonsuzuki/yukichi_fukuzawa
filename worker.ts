@@ -1,5 +1,5 @@
 const ALLOWED_GROUP_IDS = new Set([
-  "C932229a87836229baa9466c6a67cda9b",
+  "",
 ]);
 
 const SYSTEM_PROMPT = `
@@ -85,8 +85,6 @@ export default {
 
 	    const text = String(event.message.text ?? "").trim();
 
-	    ctx.waitUntil(handleMessage(env, event, replyToken, text));
-
 	    ctx.waitUntil(
 		    handleMessage(env, event, replyToken, text).catch((e) => {
 			    console.error("waitUntil task failed:", e?.stack || e);
@@ -153,7 +151,7 @@ async function replyText(token: string, replyToken: string, text: string) {
 	  console.error("Missing LINE_CHANNEL_ACCESS_TOKEN");
 	  return;
   }
-  const res = fetchWithTimeout("https://api.line.me/v2/bot/message/reply", {
+  const res = await fetchWithTimeout("https://api.line.me/v2/bot/message/reply", {
 	  method: "POST",
 	  headers: {
 		  "Content-Type": "application/json",
@@ -183,7 +181,7 @@ function isBotMentioned(event: any): boolean {
 async function askOpenRouter(apiKey: string, userText: string): Promise<string> {
   const url = "https://openrouter.ai/api/v1/chat/completions";
 
-  const res = fetchWithTimeout(url, {
+  const res = await fetchWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
