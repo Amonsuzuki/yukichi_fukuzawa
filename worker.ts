@@ -191,7 +191,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      model: "nex-agi/deepseek-v3.1-nex-n1:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      model: "qwen/qwen3-coder:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
