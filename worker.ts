@@ -191,8 +191,8 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      //model: "google/gemma-3-27b-it:free",
-      model: "deepseek/deepseek-r1-0528:free",
+      model: "google/gemma-3-27b-it:free",
+      //model: "deepseek/deepseek-r1-0528:free",
       //model: "openai/gpt-oss-20b:free", 
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
