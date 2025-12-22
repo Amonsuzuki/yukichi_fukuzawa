@@ -193,7 +193,8 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
     body: JSON.stringify({
       //model: "google/gemma-3-27b-it:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       //model: "deepseek/deepseek-r1-0528:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
-      model: "qwen/qwen-2.5-vl-7b-instruct:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      //model: "qwen/qwen-2.5-vl-7b-instruct:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      model: "qwen/qwen3-4b:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
