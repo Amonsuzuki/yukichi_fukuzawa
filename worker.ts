@@ -197,7 +197,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
         { role: "user", content: userText },
       ],
     }),
-  }, 250_000);
+  }, 900_000);
 
   if (!res.ok) {
     const t = await res.text().catch(() => "");
