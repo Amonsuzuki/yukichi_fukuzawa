@@ -87,6 +87,12 @@ export default {
 
 	    ctx.waitUntil(handleMessage(env, event, replyToken, text));
 
+	    ctx.waitUntil(
+		    handleMessage(env, event, replyToken, text).catch((e) => {
+			    console.error("waitUntil task failed:", e?.stack || e);
+		    })
+	    );
+
 	    return new Response("OK", { status: 200 });
     } catch (err: any) {
 	    console.error("Worker error:", err?.stack || err);
@@ -134,13 +140,20 @@ async function verifyLineSignature(bodyText: string, signature: string, secret: 
   return b64 === signature;
 }
 
+function fetchWithTimeout(url: string, init: RequestInit, ms: number) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+  return fetch(url, { ...init, signal: ac.signal }).finally(() => clearTimeout(t));
+}
+
+
 // Reply API
 async function replyText(token: string, replyToken: string, text: string) {
   if (!token) {
 	  console.error("Missing LINE_CHANNEL_ACCESS_TOKEN");
 	  return;
   }
-  const res = await fetch("https://api.line.me/v2/bot/message/reply", {
+  const res = fetchWithTimeout("https://api.line.me/v2/bot/message/reply", {
 	  method: "POST",
 	  headers: {
 		  "Content-Type": "application/json",
@@ -150,7 +163,7 @@ async function replyText(token: string, replyToken: string, text: string) {
 		  replyToken,
 		  messages: [{ type: "text", text }],
 	  }),
-  });
+  }, 25_000);
   if (!res.ok) {
 	  const t = await res.text().catch(() => "");
 	  console.error("LINE reply error:", res.status, t);
@@ -170,7 +183,7 @@ function isBotMentioned(event: any): boolean {
 async function askOpenRouter(apiKey: string, userText: string): Promise<string> {
   const url = "https://openrouter.ai/api/v1/chat/completions";
 
-  const res = await fetch(url, {
+  const res = fetchWithTimeout(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -186,7 +199,7 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
         { role: "user", content: userText },
       ],
     }),
-  });
+  }, 10_000);
 
   if (!res.ok) {
     const t = await res.text().catch(() => "");
