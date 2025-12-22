@@ -191,10 +191,10 @@ async function askOpenRouter(apiKey: string, userText: string): Promise<string> 
       // "X-Title": "leo-linebot",
     },
     body: JSON.stringify({
-      //model: "google/gemma-3-27b-it:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
-      //model: "deepseek/deepseek-r1-0528:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
-      //model: "qwen/qwen-2.5-vl-7b-instruct:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
-      model: "qwen/qwen3-4b:free", // OpenRouter上のモデルID :contentReference[oaicite:5]{index=5}
+      //model: "google/gemma-3-27b-it:free",
+      //model: "deepseek/deepseek-r1-0528:free",
+      model: "qwen/qwen-2.5-vl-7b-instruct:free",
+      //model: "openai/gpt-oss-20b:free", 
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userText },
