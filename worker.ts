@@ -113,7 +113,7 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 		    const key = memoryKey(event, userName, groupName);
 		    let mem = await loadMemory(env, key);
 
-		    const userContent = userName + ": " +  sanitizedText(text); 
+		    const userContent = userName + ": " +  sanitizeText(text); 
 
 		    mem = appendAndTrim(mem, { role: "user", content: userContent, t: Date.now() });
 
