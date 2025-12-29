@@ -22,8 +22,8 @@ async function getLineDisplayName(
 }
 
 async function getLineGroupName(
-  channelAccessToken: string
-  groupId: string,
+  channelAccessToken: string,
+  groupId: string
 ): Promise<string | null> {
   const res = await fetch(
     `https://api.line.me/v2/bot/group/${groupId}/summary`,
