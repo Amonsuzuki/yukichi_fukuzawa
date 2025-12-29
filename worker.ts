@@ -50,7 +50,7 @@ function memoryKey(event: any, userName: string, groupName: string): string {
 	const s = event?.source;
 
 	if (s?.type === "group") return `mem::${groupName}:${s.groupId ?? "unkown"}`;
-	if (s?.type === "room") return `mem:${groupName}:${s.groupId ?? "unkown"}`;
+	if (s?.type === "room") return `mem:${groupName}:${s.roomId ?? "unkown"}`;
 	return `mem:${userName}:${s?.userId ?? "unkown"}`;
 }
 
@@ -103,7 +103,7 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 	    if (groupId) {
 		    const fetched = await getLineGroupName(
 			    env.LINE_CHANNEL_ACCESS_TOKEN,
-			    userId
+			    groupId
 		    );
 		    if (fetched) groupName = sanitizeText(fetched);
 	    }
