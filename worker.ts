@@ -141,9 +141,9 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 		
 		    mem = appendAndTrim(mem, { role: "assistant", content: answer, t: Date.now() });
 		    await saveMemory(env, key, mem);
-	    }
 
-	    await replyText(env.LINE_CHANNEL_ACCESS_TOKEN, replyToken, answer || "応答を生成できませんでした");
+		    await replyText(env.LINE_CHANNEL_ACCESS_TOKEN, replyToken, answer || "応答を生成できませんでした");
+	    }
 	    return;
 
 	} catch (e: any) {
