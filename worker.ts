@@ -1,25 +1,36 @@
 type MemItem = { role: "user" | "assistant"; content: string; t: number };
 
-async function getLineDisplayName(
-  channelAccessToken: string,
-  userId: string
-): Promise<string | null> {
-  if (!channelAccessToken || !userId) return null;
+async function getLineDisplayNameAnyContext(token: string, source: any): Promise<string | null> {
+  const userId = source?.userId;
+  if (!token || !userId) return null;
 
-  const res = await fetch(
-    `https://api.line.me/v2/bot/profile/${userId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${channelAccessToken}`,
-      },
-    }
-  );
+  if (source?.type === "group" && source?.groupId) {
+    const res = await fetch(`https://api.line.me/v2/bot/group/${source.groupId}/member/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data?.displayName === "string" ? data.displayName : null;
+  }
 
+  if (source?.type === "room" && source?.roomId) {
+    const res = await fetch(`https://api.line.me/v2/bot/room/${source.roomId}/member/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data?.displayName === "string" ? data.displayName : null;
+  }
+
+  // 1-on-1
+  const res = await fetch(`https://api.line.me/v2/bot/profile/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) return null;
-
   const data = await res.json();
   return typeof data?.displayName === "string" ? data.displayName : null;
 }
+
 
 async function getLineGroupName(
   channelAccessToken: string,
@@ -90,9 +101,9 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 	    let userName = "あなた";
 
 	    if (userId) {
-		    const fetched = await getLineDisplayName(
+		    const fetched = await getLineDisplayNameAnyContext(
 			    env.LINE_CHANNEL_ACCESS_TOKEN,
-			    userId
+			    source
 		    );
 		    if (fetched) userName = sanitizeText(fetched);
 	    }
@@ -123,8 +134,9 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 			    await replyText(env.LINE_CHANNEL_ACCESS_TOKEN, replyToken, "OPENROUTER_API_KEY が未設定です");
 			    return;
 		    }
-		    const rawAnswer = await askOpenRouter(env.OPENROUTER_API_KEY, mem, text);
+		    const rawAnswer = await askOpenRouter(env.OPENROUTER_API_KEY, mem, text, userName);
 		    answer = sanitizeText(rawAnswer);
+		    if (!answer) answer = "応答を生成できませんでした（生成失敗）";
 
 		
 		    mem = appendAndTrim(mem, { role: "assistant", content: answer, t: Date.now() });
@@ -169,6 +181,11 @@ async function replyText(token: string, replyToken: string, text: string) {
 	  console.error("Missing LINE_CHANNEL_ACCESS_TOKEN");
 	  return;
   }
+
+  const safe = (text ?? "").trim();
+  const finalText = safe.length ? safe : "応答を生成できませんでした";
+
+
   const res = await fetchWithTimeout("https://api.line.me/v2/bot/message/reply", {
 	  method: "POST",
 	  headers: {
@@ -177,9 +194,9 @@ async function replyText(token: string, replyToken: string, text: string) {
 	  },
 	  body: JSON.stringify({
 		  replyToken,
-		  messages: [{ type: "text", text }],
+		  messages: [{ type: "text", text: finalText }],
 	  }),
-  }, 250_000);
+  }, 10_000);
   if (!res.ok) {
 	  const t = await res.text().catch(() => "");
 	  console.error("LINE reply error:", res.status, t);
@@ -242,7 +259,7 @@ async function askOpenRouter(apiKey: string, mem: MemItem[], userText: string, u
 	...mem.map(m => ({ role: m.role, content: m.content })),
       ],
     }),
-  }, 900_000);
+  }, 15_000);
 
   if (!res.ok) return "";
   const data = await res.json();
