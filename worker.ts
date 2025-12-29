@@ -109,6 +109,7 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 	    }
 	
 
+	    let answer = "null";
 	    if (mentioned) {
 		    const key = memoryKey(event, userName, groupName);
 		    let mem = await loadMemory(env, key);
@@ -123,7 +124,7 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 			    return;
 		    }
 		    const rawAnswer = await askOpenRouter(env.OPENROUTER_API_KEY, mem, text);
-		    const answer = sanitizeText(rawAnswer);
+		    answer = sanitizeText(rawAnswer);
 
 		
 		    mem = appendAndTrim(mem, { role: "assistant", content: answer, t: Date.now() });
