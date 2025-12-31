@@ -148,9 +148,7 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 
 	    let answer = "null";
 	    if (mentioned) {
-		    if (source?.type === "user" && source?.userId) {
-			    await showLineLoadingIndicator(env.LINE_CHANNEL_ACCESS_TOKEN, source.userId, 10);
-		    }
+		    await showLineLoadingIndicator(env.LINE_CHANNEL_ACCESS_TOKEN, source.userId, 10);
 		    const key = memoryKey(event, userName, groupName);
 		    let mem = await loadMemory(env, key);
 
