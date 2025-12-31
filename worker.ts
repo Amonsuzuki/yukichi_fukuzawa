@@ -1,5 +1,31 @@
 type MemItem = { role: "user" | "assistant"; content: string; t: number };
 
+async function showLineLoadingIndicator(token: string, chatId: string, seconds = 10) {
+  // LINE requires 5–60 seconds (and the animation auto-disappears on message send).
+  // Doc: https://developers.line.biz/ja/docs/messaging-api/use-loading-indicator/index.html
+  const loadingSeconds = Math.min(60, Math.max(5, seconds));
+
+  const res = await fetchWithTimeout(
+    "https://api.line.me/v2/bot/chat/loading/start",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ chatId, loadingSeconds }),
+    },
+    10_000
+  );
+
+  // Non-fatal: if it fails, just continue.
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    console.error("LINE loading indicator error:", res.status, t);
+  }
+}
+
+
 async function getLineDisplayNameAnyContext(token: string, source: any): Promise<string | null> {
   const userId = source?.userId;
   if (!token || !userId) return null;
@@ -122,6 +148,9 @@ async function handleMessage(env: any, event: any, replyToken: string, text: str
 
 	    let answer = "null";
 	    if (mentioned) {
+		    if (source?.type === "user" && source?.userId) {
+			    await showLineLoadingIndicator(env.LINE_CHANNEL_ACCESS_TOKEN, source.userId, 10);
+		    }
 		    const key = memoryKey(event, userName, groupName);
 		    let mem = await loadMemory(env, key);
 
